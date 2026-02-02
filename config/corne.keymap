@@ -9,6 +9,20 @@
 #include <dt-bindings/zmk/bt.h>
 
 / {
+        behaviors {
+                studio_unlock: studio_unlock {
+                compatible = "zmk,behavior-studio-unlock";
+                };
+        };
+        combos {
+                compatible = "zmk,combos";
+
+                studio_unlock_combo {
+                timeout-ms = <500>;
+                key-positions = <17 18>;
+                bindings = <&studio_unlock>;
+                };
+        };
         keymap {
                 compatible = "zmk,keymap";
 
