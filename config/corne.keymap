@@ -11,6 +11,15 @@
 / {
     behaviors {
         studio_unlock: studio_unlock { compatible = "zmk,behavior-studio-unlock"; };
+        hm: hm {
+            compatible = "zmk,behavior-hold-tap";
+            label = "HM";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <2>;
+            bindings = <&kp>, <&kp>;
+        };
     };
 
     combos {
