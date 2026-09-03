@@ -281,10 +281,10 @@
             //                    | GUI |     | SPC |   | ENT |     | ALT |
 
             bindings = <
-&kp ESC       &bt BT_SEL 0  &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &kp F8          &kp F1         &kp F2    &kp F3    &kp F4     &kp F5  &kp BSPC
-&bt BT_SEL 1  &bt BT_SEL 2  &kp NUMBER_4  &kp NUMBER_5  &kp NUMBER_6  &kp F9          &kp PAGE_UP    &kp HOME  &kp UP    &kp END    &kp F6  &caps_word
-&bt BT_SEL 3  &bt BT_SEL 4  &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_0    &kp PAGE_DOWN  &kp LEFT  &kp DOWN  &kp RIGHT  &kp F7  &bt BT_CLR
-                                          &kp LGUI      &trans        &kp SPACE       &kp RET        &trans    &kp RALT
+&bt BT_SEL 0  &bt BT_SEL 1  &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &trans       &kp N6    &kp N7        &kp N8    &kp N9               &kp N0         &kp BSPC
+&bt BT_SEL 2  &bt BT_SEL 3  &kp NUMBER_4  &kp NUMBER_5  &kp NUMBER_6  &trans       &kp HOME  &kp LC(LEFT)  &kp UP    &kp LC(RIGHT_ARROW)  &kp PAGE_UP    &caps_word
+&bt BT_SEL 4  &kp NUMBER_0  &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &trans       &kp END   &kp LEFT      &kp DOWN  &kp RIGHT            &kp PAGE_DOWN  &bt BT_CLR
+                                          &kp LGUI      &trans        &kp SPACE    &kp RET   &trans        &kp RALT
             >;
         };
 
@@ -296,9 +296,9 @@
             //                    | GUI |     | SPC |   | ENT |     | ALT |
 
             bindings = <
-&kp ESCAPE  &kp AT           &kp COLON     &kp HASH           &kp DLLR  &kp PRCNT         &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp DEL
-&trans      &kp EXCLAMATION  &kp QUESTION  &kp DOUBLE_QUOTES  &kp SQT   &kp MINUS         &kp LEFT_BRACE        &kp RIGHT_BRACE        &kp LESS_THAN     &kp GREATER_THAN   &kp PIPE       &trans
-&trans      &kp GRAVE        &kp ASTERISK  &kp EQUAL          &kp PLUS  &kp UNDERSCORE    &kp CARET             &kp AMPS               &kp COMMA         &kp PERIOD         &kp SLASH      &trans
+&kp GRAVE    &TRIPLE_QUOTE    &kp COLON     &kp HASH           &kp DLLR  &kp PRCNT         &kp CARET             &kp AMPS               &PTR_LEFT         &PTR_RIGHT         &kp TILDE      &kp DEL
+&kp AT_SIGN  &kp EXCLAMATION  &kp QUESTION  &kp DOUBLE_QUOTES  &kp SQT   &kp MINUS         &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &trans
+&trans       &kp SLASH        &kp ASTERISK  &kp EQUAL          &kp PLUS  &kp UNDERSCORE    &kp LEFT_BRACE        &kp RIGHT_BRACE        &kp LESS_THAN     &kp GREATER_THAN   &kp PIPE       &trans
                                            &kp LGUI           &trans    &kp SPACE         &kp RET               &trans                 &kp RALT
             >;
         };
