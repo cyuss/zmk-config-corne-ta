@@ -77,9 +77,7 @@
             hold-trigger-key-positions = <LEFT_KEYS THUMB_KEYS>;
             hold-trigger-on-release;
         };
-
     };
-
 
     conditional_layers {
         compatible = "zmk,conditional-layers";
@@ -175,10 +173,10 @@
             // |     |     |     |     |     |     |   | PREV | PLAY | NEXT |      |     |     |
 
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans    &kp C_BRI_DN  &kp C_BRI_UP  &trans        &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &kp C_VOL_DN  &kp C_MUTE    &kp C_VOL_UP  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &kp C_PREV    &kp C_PP      &kp C_NEXT    &trans  &trans  &trans
-                        &trans  &trans  &trans    &trans        &trans        &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &trans      &trans        &trans        &trans         &trans        &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &kp C_MUTE  &kp C_VOL_DN  &kp C_VOL_UP  &kp C_BRI_DEC  &kp C_BRI_UP  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &kp C_PREV  &kp C_PP      &kp C_NEXT    &trans         &trans        &trans
+                        &trans  &trans  &trans    &trans      &trans        &trans
             >;
         };
     };
