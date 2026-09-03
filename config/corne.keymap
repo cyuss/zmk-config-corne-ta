@@ -283,13 +283,16 @@
             // | ESC |  BT0  |  7  |  8  |  9  |  F8  |   |  F1  |  F2   |  F3  |  F4   |  F5  |  BSPC  |
             // | BT1 |  BT2  |  4  |  5  |  6  |  F9  |   | PGUP | HOME  |  UP  |  END  |  F6  | CAPSWD |
             // | BT3 |  BT4  |  1  |  2  |  3  |  0   |   | PGDN | LEFT  | DOWN | RIGHT |  F7  | BTCLR  |
-            //               | GUI |     | SPC |   | RET |     | ALT |
+            //               | UNLOCK |     | SPC |   | RET |     | ALT |
+            //
+            // Left outer thumb unlocks ZMK Studio (it replaced a GUI that the
+            // A/; home row mods already provide). The G+H combo still works.
 
             bindings = <
 &kp ESC       &bt BT_SEL 0  &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &kp F8          &kp F1         &kp F2    &kp F3    &kp F4     &kp F5  &kp BSPC
 &bt BT_SEL 1  &bt BT_SEL 2  &kp NUMBER_4  &kp NUMBER_5  &kp NUMBER_6  &kp F9          &kp PAGE_UP    &kp HOME  &kp UP    &kp END    &kp F6  &caps_word
 &bt BT_SEL 3  &bt BT_SEL 4  &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_0    &kp PAGE_DOWN  &kp LEFT  &kp DOWN  &kp RIGHT  &kp F7  &bt BT_CLR
-                                          &kp LGUI      &trans        &kp SPACE       &kp RET        &trans    &kp RALT
+                                          &studio_unlock  &trans      &kp SPACE       &kp RET        &trans    &kp RALT
             >;
         };
 

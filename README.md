@@ -113,6 +113,26 @@ Thumb layer-taps intentionally do **not** set `require-prior-idle-ms`: a thumb i
 legitimately pressed right after a letter, and suppressing the hold there would
 emit `ESC`/`BSPC` instead of switching layers.
 
+## ZMK Studio overrides the firmware keymap
+
+`CONFIG_ZMK_STUDIO=y` implies `ZMK_KEYMAP_SETTINGS_STORAGE` (`app/src/studio/Kconfig`).
+At boot ZMK loads the firmware keymap, then **overwrites individual key positions
+with whatever Studio previously saved to flash** (`keymap_handle_set` in
+`app/src/keymap.c`). Any position you have ever edited in Studio is therefore
+frozen, and editing this repo will not change it.
+
+If a keymap change does not take effect after flashing, in order:
+
+1. In ZMK Studio, use **Reset settings** — clears the stored keymap only, keeps
+   Bluetooth pairings. Requires unlocking first.
+2. Failing that, flash the `settings_reset` firmware (built by CI from
+   `build.yaml`) to **both** halves, then immediately reflash the normal
+   firmware. This also wipes every Bluetooth pairing, so all hosts must be
+   re-paired.
+
+Unlock Studio with the **left outer thumb key on the Nav layer**, or the
+**G + H combo**.
+
 ## Building
 
 Firmware is built by GitHub Actions on every push. Grab the artifact from the
@@ -133,5 +153,5 @@ west build -s zmk/app -d build/left  -b nice_nano_v2 -- \
 | `config/corne.keymap` | layers, behaviors, combos, macros, French input |
 | `config/corne.conf` | Kconfig (sleep, TX power, Studio, debounce) |
 | `config/west.yml` | ZMK revision pin |
-| `build.yaml` | CI build matrix |
+| `build.yaml` | CI build matrix, including the `settings_reset` firmware |
 | `boards/shields/` | drop-in point for a custom shield (`zephyr/module.yml` sets `board_root`) |
