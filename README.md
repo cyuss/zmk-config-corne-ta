@@ -13,7 +13,7 @@ two `nice_nano_v2` controllers with **nice!view** displays.
 
 ## Layout
 
-Six layers. The Base and French layers carry a `display-name`, so they are named
+Seven layers. The Base and French layers carry a `display-name`, so they are named
 on the nice!view.
 
 ### 0 — Base
@@ -126,10 +126,10 @@ so they cannot be reached no matter what is flashed.
 This repo is edited through git and keymap-editor, so it is the single source of
 truth and Studio is turned off. What is flashed is what runs.
 
-Migrating from a build that had Studio enabled requires clearing what it stored:
-flash `settings_reset-nice_nano_v2-zmk.uf2` (built by CI from `build.yaml`) to
-**both** halves, then immediately reflash the normal firmware. This also wipes
-every Bluetooth pairing, so all hosts must be re-paired. It is a one-time step.
+With `CONFIG_ZMK_STUDIO=n` the settings-storage code is not compiled in at all,
+so anything Studio previously wrote to flash is simply ignored. **No settings
+reset is needed for the keymap.** The `settings_reset` firmware stays in
+`build.yaml` for Bluetooth trouble only; it also wipes every pairing.
 
 ## Building
 
