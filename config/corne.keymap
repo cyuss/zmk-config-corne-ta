@@ -292,16 +292,13 @@
             // | ESC |  BT0  |  7  |  8  |  9  |  F8  |   |  F1  |  F2   |  F3  |  F4   |  F5  |  BSPC  |
             // | BT1 |  BT2  |  4  |  5  |  6  |  F9  |   | PGUP | HOME  |  UP  |  END  |  F6  | CAPSWD |
             // | BT3 |  BT4  |  1  |  2  |  3  |  0   |   | PGDN | LEFT  | DOWN | RIGHT |  F7  | BTCLR  |
-            //               | UNLOCK |     | SPC |   | RET |     | ALT |
-            //
-            // Left outer thumb unlocks ZMK Studio (it replaced a GUI that the
-            // A/; home row mods already provide). The G+H combo still works.
+            //               | GUI |     | SPC |   | RET |     | ALT |
 
             bindings = <
 &kp ESC       &bt BT_SEL 0  &kp NUMBER_7  &kp NUMBER_8    &kp NUMBER_9  &kp F8          &kp F1         &kp F2    &kp F3    &kp F4     &kp F5  &kp BSPC
 &bt BT_SEL 1  &bt BT_SEL 2  &kp NUMBER_4  &kp NUMBER_5    &kp NUMBER_6  &kp F9          &kp PAGE_UP    &kp HOME  &kp UP    &kp END    &kp F6  &caps_word
 &bt BT_SEL 3  &bt BT_SEL 4  &kp NUMBER_1  &kp NUMBER_2    &kp NUMBER_3  &kp NUMBER_0    &kp PAGE_DOWN  &kp LEFT  &kp DOWN  &kp RIGHT  &kp F7  &bt BT_CLR
-                                          &studio_unlock  &trans        &kp SPACE       &kp RET        &trans    &kp RALT
+                                          &kp LGUI        &trans        &kp SPACE       &kp RET        &trans    &kp RALT
             >;
         };
 
@@ -313,11 +310,13 @@
             // |     |  !  |  ?  |  "  |  '  |  _  |   |  {  |  }  |  <  |  >  | PIPE|     |
             // |     |  `  |  *  |  =  |  +  |  -  |   |  ^  |  &  |  ,  |  .  |  /  |     |
             //             | GUI |     | SPC |   | RET |     | ALT |
+            //
+            // Bottom right unlocks ZMK Studio; the G+H combo still works too.
 
             bindings = <
-&kp ESCAPE  &kp AT           &kp COLON     &kp HASH           &kp DLLR  &kp PRCNT         &kp CARET       &kp AMPS         &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp DEL
+&kp ESCAPE  &kp AT           &kp COLON     &kp HASH           &kp DLLR  &kp PRCNT         &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &kp BACKSLASH  &kp DEL
 &trans      &kp EXCLAMATION  &kp QUESTION  &kp DOUBLE_QUOTES  &kp SQT   &kp MINUS         &kp LEFT_BRACE  &kp RIGHT_BRACE  &kp LESS_THAN     &kp GREATER_THAN   &kp PIPE       &trans
-&trans      &kp GRAVE        &kp ASTERISK  &kp EQUAL          &kp PLUS  &kp UNDERSCORE    &kp CARET       &kp AMPS         &kp COMMA         &kp PERIOD         &kp SLASH      &trans
+&trans      &kp GRAVE        &kp ASTERISK  &kp EQUAL          &kp PLUS  &kp UNDERSCORE    &kp CARET             &kp AMPS               &kp COMMA         &kp PERIOD         &kp SLASH      &studio_unlock
                                            &kp LGUI           &trans    &kp SPACE         &kp RET         &trans           &kp RALT
             >;
         };
