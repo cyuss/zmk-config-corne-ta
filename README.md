@@ -13,8 +13,8 @@ two `nice_nano_v2` controllers with **nice!view** displays.
 
 ## Layout
 
-Seven layers. The Base and French layers carry a `display-name`, so they are named
-on the nice!view.
+Four layers. Base and System carry a `display-name`, so they are named on the
+nice!view.
 
 ### 0 — Base
 
@@ -27,7 +27,7 @@ on the nice!view.
 
 - **Home row mods** (on hold): `A`/`;` = GUI, `S`/`L` = ALT, `D`/`K` = SHIFT, `F`/`J` = CTRL.
 - **Outer pinky columns**: Hyper (`GUI+ALT+SHIFT+CTRL`) on hold, `ESC` on tap.
-- **Thumbs**: the two inner thumb keys are layer-taps — hold for the layer, tap for `ESC` (left) / `BSPC` (right). The right outer thumb holds the French layer.
+- **Thumbs**: the two inner thumb keys are layer-taps — hold for the layer, tap for `ESC` (left) / `BSPC` (right). The right outer thumb holds the System layer.
 
 ### 1 — Nav (right inner thumb)
 
@@ -45,57 +45,16 @@ on the nice!view.
      |  `  |  *  |  =  |  +  |  -  |     |  ^  |  &  |  ,  |  .  |  /  |
 ```
 
-### 3 / 4 / 5 — French
+### 3 — System
 
 ```
-     |  ê  |  ô  |  î  |  û  |  â  |     |  «  |  »  |  €  |  …  |
-     |  é  |  è  |  à  |  ç  |  ù  |     |
-     |  ë  |  ï  |  ü  |  œ  |  æ  |     |                     OS
+     |     |     |     |     |     |     |  BRI- | BRI+ |      |      |     |
+     |     |     |     |     |     |     |  VOL- | MUTE | VOL+ |      |     |
+     |     |     |     |     |     |     |  PREV | PLAY | NEXT |      |     |
 ```
 
-Held with the right outer thumb, so the left hand types. Shift gives the capital
-on every letter (`É`, `À`, `Ç`, …) through a mod-morph on each key.
-
-ZMK sends HID scancodes, not characters, so what actually appears depends
-entirely on the host's keyboard layout. Both hosts are covered:
-
-| Layer | Host | Mechanism |
-|---|---|---|
-| 3 `French` | macOS | Option dead keys of the standard US layout (`⌥E` `⌥\`` `⌥I` `⌥U`), plus direct `⌥C` `⌥Q` `⌥'` `⌥\` `⌥⇧2` `⌥;` |
-| 4 `French (Win)` | Windows | CP1252 alt codes — hold Alt, type four keypad digits |
-| 5 `OS: Windows` | — | empty all-transparent flag layer |
-
-Layer 5 never shadows anything on its own; it is only a switch, toggled by the
-bottom-right key of the French layer. A conditional layer wires it up:
-
-```dts
-french_windows {
-    if-layers = <3 5>;
-    then-layer = <4>;
-};
-```
-
-When the flag is on *and* the French key is held, layer 4 activates and, being
-higher, wins over layer 3 — same physical keys, right encoding for the connected
-host. Because layer 5 stays active in Windows mode and the nice!view shows
-`zmk_keymap_highest_layer_active()`, its name doubles as a permanent host
-indicator on the display.
-
-Two caveats on the Windows side: alt codes need **NumLock on**, and the leading
-`0` is significant (ANSI/CP1252, not the OEM code page).
-
-The macOS side needs only four parameterised macros — one per dead accent —
-rather than one macro per accented letter:
-
-```dts
-mac_acu: mac_acu {
-    compatible = "zmk,behavior-macro-one-param";
-    #binding-cells = <1>;
-    bindings = <&kp LA(E)>, <&macro_param_1to1>, <&kp MACRO_PLACEHOLDER>;
-};
-```
-
-`&mac_acu E` gives `é`, `&mac_acu LS(E)` gives `É`.
+Reached by the right outer thumb, or by holding both thumb layer keys at once
+(a conditional layer on `if-layers = <1 2>`).
 
 ## Hold-tap tuning
 
@@ -148,7 +107,7 @@ west build -s zmk/app -d build/left  -b nice_nano_v2 -- \
 
 | Path | Purpose |
 |---|---|
-| `config/corne.keymap` | layers, behaviors, combos, macros, French input |
+| `config/corne.keymap` | layers, behaviors, macros |
 | `config/corne.conf` | Kconfig (sleep, TX power, Studio, debounce) |
 | `config/west.yml` | ZMK revision pin |
 | `build.yaml` | CI build matrix, including the `settings_reset` firmware |
