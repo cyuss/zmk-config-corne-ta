@@ -19,6 +19,31 @@
 #define RIGHT_KEYS  6  7  8  9 10 11 18 19 20 21 22 23 30 31 32 33 34 35
 #define THUMB_KEYS 36 37 38 39 40 41
 
+/* One French character: plain binding, or shifted binding when a shift is held.
+ * mod-morph strips the shift before invoking the binding (no keep-mods), so the
+ * macOS dead key is always sent clean and the capital comes from the explicit
+ * LS() inside the second binding.
+ */
+#define MORPH(nm, plain, shifted) \
+    nm: nm { \
+        compatible = "zmk,behavior-mod-morph"; \
+        #binding-cells = <0>; \
+        bindings = <plain>, <shifted>; \
+        mods = <(MOD_LSFT|MOD_RSFT)>; \
+    };
+
+/* One Windows CP1252 alt code: hold Alt, type the four keypad digits, release.
+ * Requires NumLock to be on. The leading 0 is significant (ANSI, not OEM).
+ */
+#define ALT_CODE(nm, d1, d2, d3, d4) \
+    ZMK_MACRO(nm, \
+        wait-ms = <40>; \
+        tap-ms = <40>; \
+        bindings = <&macro_press &kp LALT> \
+                 , <&macro_tap &kp d1 &kp d2 &kp d3 &kp d4> \
+                 , <&macro_release &kp LALT>; \
+    )
+
 /* Thumb layer-taps.
  *
  * The built-in &lt is "tap-preferred", which only resolves to the hold after
@@ -74,6 +99,40 @@
             hold-trigger-key-positions = <LEFT_KEYS THUMB_KEYS>;
             hold-trigger-on-release;
         };
+
+        /* French characters, macOS variant (layer 3). */
+        MORPH(m_eacu, &mac_acu E, &mac_acu LS(E))   // e/E acute      e
+        MORPH(m_egrv, &mac_grv E, &mac_grv LS(E))   // e/E grave      e
+        MORPH(m_ecir, &mac_cir E, &mac_cir LS(E))   // e/E circumflex e
+        MORPH(m_euml, &mac_uml E, &mac_uml LS(E))   // e/E diaeresis  e
+        MORPH(m_agrv, &mac_grv A, &mac_grv LS(A))   // a/A grave      a
+        MORPH(m_acir, &mac_cir A, &mac_cir LS(A))   // a/A circumflex a
+        MORPH(m_icir, &mac_cir I, &mac_cir LS(I))   // i/I circumflex i
+        MORPH(m_iuml, &mac_uml I, &mac_uml LS(I))   // i/I diaeresis  i
+        MORPH(m_ocir, &mac_cir O, &mac_cir LS(O))   // o/O circumflex o
+        MORPH(m_ugrv, &mac_grv U, &mac_grv LS(U))   // u/U grave      u
+        MORPH(m_ucir, &mac_cir U, &mac_cir LS(U))   // u/U circumflex u
+        MORPH(m_uuml, &mac_uml U, &mac_uml LS(U))   // u/U diaeresis  u
+        MORPH(m_cced, &kp LA(C), &kp LS(LA(C)))   // c/C cedilla    c
+        MORPH(m_oe, &kp LA(Q), &kp LS(LA(Q)))   // oe/OE ligature
+        MORPH(m_ae, &kp LA(SQT), &kp LS(LA(SQT)))   // ae/AE ligature
+
+        /* French characters, Windows variant (layer 4). */
+        MORPH(k_eacu, &w_eacu, &w_eacu_up)   // e/E acute      e
+        MORPH(k_egrv, &w_egrv, &w_egrv_up)   // e/E grave      e
+        MORPH(k_ecir, &w_ecir, &w_ecir_up)   // e/E circumflex e
+        MORPH(k_euml, &w_euml, &w_euml_up)   // e/E diaeresis  e
+        MORPH(k_agrv, &w_agrv, &w_agrv_up)   // a/A grave      a
+        MORPH(k_acir, &w_acir, &w_acir_up)   // a/A circumflex a
+        MORPH(k_icir, &w_icir, &w_icir_up)   // i/I circumflex i
+        MORPH(k_iuml, &w_iuml, &w_iuml_up)   // i/I diaeresis  i
+        MORPH(k_ocir, &w_ocir, &w_ocir_up)   // o/O circumflex o
+        MORPH(k_ugrv, &w_ugrv, &w_ugrv_up)   // u/U grave      u
+        MORPH(k_ucir, &w_ucir, &w_ucir_up)   // u/U circumflex u
+        MORPH(k_uuml, &w_uuml, &w_uuml_up)   // u/U diaeresis  u
+        MORPH(k_cced, &w_cced, &w_cced_up)   // c/C cedilla    c
+        MORPH(k_oe, &w_oe, &w_oe_up)   // oe/OE ligature
+        MORPH(k_ae, &w_ae, &w_ae_up)   // ae/AE ligature
     };
 
     combos {
@@ -86,7 +145,93 @@
         };
     };
 
+    /* Layer 5 is an empty all-transparent flag layer toggled with &tog 5, so it
+     * never shadows anything on its own. When it is on AND the French layer is
+     * held, layer 4 (Windows alt codes) activates and, being higher, takes
+     * precedence over layer 3 (macOS dead keys). Same physical keys, right
+     * encoding for the host that is currently connected.
+     */
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+
+        french_windows {
+            if-layers = <3 5>;
+            then-layer = <4>;
+        };
+    };
+
     macros {
+        /* macOS dead-key drivers. The US layout on macOS turns Option+E/`/I/U
+         * into dead accents; one parameterised macro per accent covers every
+         * vowel, so 4 macros replace ~30 hand-written ones.
+         */
+        mac_acu: mac_acu {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            wait-ms = <30>;
+            tap-ms = <30>;
+            bindings = <&kp LA(E)>, <&macro_param_1to1>, <&kp MACRO_PLACEHOLDER>;
+        };
+
+        mac_grv: mac_grv {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            wait-ms = <30>;
+            tap-ms = <30>;
+            bindings = <&kp LA(GRAVE)>, <&macro_param_1to1>, <&kp MACRO_PLACEHOLDER>;
+        };
+
+        mac_cir: mac_cir {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            wait-ms = <30>;
+            tap-ms = <30>;
+            bindings = <&kp LA(I)>, <&macro_param_1to1>, <&kp MACRO_PLACEHOLDER>;
+        };
+
+        mac_uml: mac_uml {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            wait-ms = <30>;
+            tap-ms = <30>;
+            bindings = <&kp LA(U)>, <&macro_param_1to1>, <&kp MACRO_PLACEHOLDER>;
+        };
+
+        ALT_CODE(w_eacu,     KP_N0, KP_N2, KP_N3, KP_N3)   // e/E acute      e
+        ALT_CODE(w_eacu_up,  KP_N0, KP_N2, KP_N0, KP_N1)
+        ALT_CODE(w_egrv,     KP_N0, KP_N2, KP_N3, KP_N2)   // e/E grave      e
+        ALT_CODE(w_egrv_up,  KP_N0, KP_N2, KP_N0, KP_N0)
+        ALT_CODE(w_ecir,     KP_N0, KP_N2, KP_N3, KP_N4)   // e/E circumflex e
+        ALT_CODE(w_ecir_up,  KP_N0, KP_N2, KP_N0, KP_N2)
+        ALT_CODE(w_euml,     KP_N0, KP_N2, KP_N3, KP_N5)   // e/E diaeresis  e
+        ALT_CODE(w_euml_up,  KP_N0, KP_N2, KP_N0, KP_N3)
+        ALT_CODE(w_agrv,     KP_N0, KP_N2, KP_N2, KP_N4)   // a/A grave      a
+        ALT_CODE(w_agrv_up,  KP_N0, KP_N1, KP_N9, KP_N2)
+        ALT_CODE(w_acir,     KP_N0, KP_N2, KP_N2, KP_N6)   // a/A circumflex a
+        ALT_CODE(w_acir_up,  KP_N0, KP_N1, KP_N9, KP_N4)
+        ALT_CODE(w_icir,     KP_N0, KP_N2, KP_N3, KP_N8)   // i/I circumflex i
+        ALT_CODE(w_icir_up,  KP_N0, KP_N2, KP_N0, KP_N6)
+        ALT_CODE(w_iuml,     KP_N0, KP_N2, KP_N3, KP_N9)   // i/I diaeresis  i
+        ALT_CODE(w_iuml_up,  KP_N0, KP_N2, KP_N0, KP_N7)
+        ALT_CODE(w_ocir,     KP_N0, KP_N2, KP_N4, KP_N4)   // o/O circumflex o
+        ALT_CODE(w_ocir_up,  KP_N0, KP_N2, KP_N1, KP_N2)
+        ALT_CODE(w_ugrv,     KP_N0, KP_N2, KP_N4, KP_N9)   // u/U grave      u
+        ALT_CODE(w_ugrv_up,  KP_N0, KP_N2, KP_N1, KP_N7)
+        ALT_CODE(w_ucir,     KP_N0, KP_N2, KP_N5, KP_N1)   // u/U circumflex u
+        ALT_CODE(w_ucir_up,  KP_N0, KP_N2, KP_N1, KP_N9)
+        ALT_CODE(w_uuml,     KP_N0, KP_N2, KP_N5, KP_N2)   // u/U diaeresis  u
+        ALT_CODE(w_uuml_up,  KP_N0, KP_N2, KP_N2, KP_N0)
+        ALT_CODE(w_cced,     KP_N0, KP_N2, KP_N3, KP_N1)   // c/C cedilla    c
+        ALT_CODE(w_cced_up,  KP_N0, KP_N1, KP_N9, KP_N9)
+        ALT_CODE(w_oe,     KP_N0, KP_N1, KP_N5, KP_N6)   // oe/OE ligature
+        ALT_CODE(w_oe_up,  KP_N0, KP_N1, KP_N4, KP_N0)
+        ALT_CODE(w_ae,     KP_N0, KP_N2, KP_N3, KP_N0)   // ae/AE ligature
+        ALT_CODE(w_ae_up,  KP_N0, KP_N1, KP_N9, KP_N8)
+        ALT_CODE(w_guilo,     KP_N0, KP_N1, KP_N7, KP_N1)   // left guillemet  <<
+        ALT_CODE(w_guilc,     KP_N0, KP_N1, KP_N8, KP_N7)   // right guillemet >>
+        ALT_CODE(w_euro,     KP_N0, KP_N1, KP_N2, KP_N8)   // euro sign
+        ALT_CODE(w_ellip,     KP_N0, KP_N1, KP_N3, KP_N3)   // ellipsis
+
         PTR_RIGHT: PTR_RIGHT {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
@@ -119,7 +264,7 @@
             // |  TAB    |  Q  |  W  |  E  |  R  |  T  |   |  Y  |  U  |  I  |  O  |  P  |  BSPC   |
             // | HYP/ESC |  A  |  S  |  D  |  F  |  G  |   |  H  |  J  |  K  |  L  |  ;  | HYP/ESC |
             // | LSHFT   |  Z  |  X  |  C  |  V  |  B  |   |  N  |  M  |  ,  |  .  |  /  | RSHFT   |
-            //                 | GUI | SYM/ESC | SPC |   | RET | NAV/BSPC | ALT |
+            //                 | GUI | SYM/ESC | SPC |   | RET | NAV/BSPC | FR |
             //
             // Home row: A/; = GUI, S/L = ALT, D/K = SHIFT, F/J = CTRL (on hold).
 
@@ -127,7 +272,7 @@
 &kp TAB                       &kp Q            &kp W            &kp E              &kp R                &kp T             &kp Y    &kp U                 &kp I               &kp O             &kp P                &kp BSPC
 &mt LG(LA(LS(LCTRL))) ESCAPE  &hml LEFT_GUI A  &hml LEFT_ALT S  &hml LEFT_SHIFT D  &hml LEFT_CONTROL F  &kp G             &kp H    &hmr RIGHT_CONTROL J  &hmr RIGHT_SHIFT K  &hmr RIGHT_ALT L  &hmr RIGHT_GUI SEMI  &mt RG(RA(RS(RCTRL))) ESCAPE
 &kp LSHFT                     &kp Z            &kp X            &kp C              &kp V                &kp B             &kp N    &kp M                 &kp COMMA           &kp DOT           &kp FSLH             &kp RIGHT_SHIFT
-                                                                &kp LGUI           &lt 2 ESCAPE         &kp SPACE         &kp RET  &lt 1 BSPC            &kp RALT
+                                                                &kp LGUI           &lt 2 ESCAPE         &kp SPACE         &kp RET  &lt 1 BSPC            &mo 3   
             >;
         };
 
@@ -162,6 +307,53 @@
 &trans      &kp EXCLAMATION  &kp QUESTION  &kp DOUBLE_QUOTES  &kp SQT   &kp UNDERSCORE    &kp LEFT_BRACE        &kp RIGHT_BRACE        &kp LESS_THAN     &kp GREATER_THAN   &kp PIPE       &trans
 &trans      &kp GRAVE        &kp ASTERISK  &kp EQUAL          &kp PLUS  &kp MINUS         &kp CARET             &kp AMPS               &kp COMMA         &kp PERIOD         &kp SLASH      &trans
                                            &kp LGUI           &trans    &kp SPACE         &kp RET               &trans                 &kp RALT
+            >;
+        };
+        French {
+            display-name = "French";
+
+            // macOS variant: Option dead keys on the US layout.
+            // ----------------------------------------------------------------------------------------------
+            // |     |  ê  |  ô  |  î  |  û  |  â  |   |  «  |  »  |  €  |  …  |     |     |
+            // |     |  é  |  è  |  à  |  ç  |  ù  |   |     |     |     |     |     |     |
+            // |     |  ë  |  ï  |  ü  |  œ  |  æ  |   |     |     |     |     |     | OS  |
+            //
+            // Shift gives the capital on every letter. OS toggles to the Windows variant.
+
+            bindings = <
+&trans            &m_ecir           &m_ocir           &m_icir           &m_ucir           &m_acir           &kp LA(BSLH)      &kp LS(LA(BSLH))  &kp LS(LA(N2))    &kp LA(SEMI)      &trans            &trans
+&trans            &m_eacu           &m_egrv           &m_agrv           &m_cced           &m_ugrv           &trans            &trans            &trans            &trans            &trans            &trans
+&trans            &m_euml           &m_iuml           &m_uuml           &m_oe             &m_ae             &trans            &trans            &trans            &trans            &trans            &tog 5
+                                                      &trans            &trans            &trans            &trans            &trans            &trans
+            >;
+        };
+
+        FrenchWin {
+            display-name = "French (Win)";
+
+            // Windows variant: CP1252 alt codes, same positions as layer 3.
+            // Reached by holding the French key while layer 5 is toggled on.
+
+            bindings = <
+&trans    &k_ecir   &k_ocir   &k_icir   &k_ucir   &k_acir   &w_guilo  &w_guilc  &w_euro   &w_ellip  &trans    &trans
+&trans    &k_eacu   &k_egrv   &k_agrv   &k_cced   &k_ugrv   &trans    &trans    &trans    &trans    &trans    &trans
+&trans    &k_euml   &k_iuml   &k_uuml   &k_oe     &k_ae     &trans    &trans    &trans    &trans    &trans    &tog 5
+                              &trans    &trans    &trans    &trans    &trans    &trans
+            >;
+        };
+
+        OsWindows {
+            display-name = "OS: Windows";
+
+            // Flag layer only: entirely transparent, toggled with &tog 5.
+            // Its only job is to feed the conditional layer above, and to show
+            // the current host mode on the nice!view.
+
+            bindings = <
+&trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans 
+&trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans 
+&trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans 
+                                        &trans &trans &trans &trans &trans &trans 
             >;
         };
     };
