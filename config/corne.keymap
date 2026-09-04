@@ -134,21 +134,30 @@
         };
 
         Nav {
+            display-name = "Nav";
+
             // -----------------------------------------------------------------------------------------
-            // | BT0  | BT1 |  7  |  8  |  9  |     |   | HOME| C-LFT|  UP | C-RGT| PGUP | BSPC   |
-            // | BT2  | BT3 |  4  |  5  |  6  |     |   | END | LEFT | DOWN| RIGHT| PGDN | CAPSWD |
-            // | BT4  |  0  |  1  |  2  |  3  |     |   |     |      |     |      |      | BTCLR  |
+            // |      |     |  7  |  8  |  9  |     |   | HOME| C-LFT|  UP | C-RGT| PGUP | BSPC   |
+            // |      |     |  4  |  5  |  6  |     |   | END | LEFT | DOWN| RIGHT| PGDN | CAPSWD |
+            // |      |     |  1  |  2  |  3  |  0  |   |     |      |     |      |      |        |
             //                    | GUI |     | SPC |   | ENT |     | ALT |
+            //
+            // Bluetooth moved to the System layer. The blank left-hand keys are
+            // transparent and fall through to Base: ESC/Hyper, the A and S home
+            // row mods, and Meh. Shifted text selection is easier than it was
+            // while the BT keys shadowed them.
 
             bindings = <
-&bt BT_SEL 0  &bt BT_SEL 1  &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &trans          &kp HOME  &kp LC(LEFT)  &kp UP    &kp LC(RIGHT_ARROW)  &kp PAGE_UP    &kp BSPC
-&bt BT_SEL 2  &bt BT_SEL 3  &kp NUMBER_4  &kp NUMBER_5  &kp NUMBER_6  &trans          &kp END   &kp LEFT      &kp DOWN  &kp RIGHT            &kp PAGE_DOWN  &caps_word
-&bt BT_SEL 4  &trans        &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_0    &trans    &trans        &trans    &trans               &trans         &bt BT_CLR
+&trans        &trans        &kp NUMBER_7  &kp NUMBER_8  &kp NUMBER_9  &trans          &kp HOME  &kp LC(LEFT)  &kp UP    &kp LC(RIGHT_ARROW)  &kp PAGE_UP    &kp BSPC
+&trans        &trans        &kp NUMBER_4  &kp NUMBER_5  &kp NUMBER_6  &trans          &kp END   &kp LEFT      &kp DOWN  &kp RIGHT            &kp PAGE_DOWN  &caps_word
+&trans        &trans        &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_0    &trans    &trans        &trans    &trans               &trans         &trans
                                           &kp LGUI      &trans        &kp SPACE       &kp RET   &trans        &kp RALT
             >;
         };
 
         Symbols {
+            display-name = "Symbols";
+
             // -----------------------------------------------------------------------------------------
             // |  TAB |  !  |  @  |  #  |  $  |  %  |   |  ^  |  &  |  *  |  (  |  )  | BSPC |
             // | CTRL |     |     |     |     |     |   |  -  |  =  |  [  |  ]  |  \  |  `   |
@@ -168,14 +177,17 @@
 
             // Right outer thumb, or both thumb layer keys at once (Nav + Symbols).
             // ----------------------------------------------------------------------------------------------
-            // |     |     |     |     |     |     |   | BRI- | BRI+ |      |      |     |     |
-            // |     |     |     |     |     |     |   | VOL- | MUTE | VOL+ |      |     |     |
-            // |     |     |     |     |     |     |   | PREV | PLAY | NEXT |      |     |     |
+            // |      | BT0 | BT1 | BT2 | BT3 | BT4 |   | MUTE | VOL- | VOL+ | BRI- | BRI+ |     |
+            // |      |     |     |     |     |     |   | PREV | PLAY | NEXT |      |      |     |
+            // | BTCLR|     |     |     |     |     |   |      |      |      |      |      |     |
+            //
+            // BT0-BT4 select a Bluetooth profile, left to right. BTCLR sits in
+            // the far corner, away from them, since it clears the pairing.
 
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans    &trans      &trans        &trans        &trans         &trans        &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &kp C_MUTE  &kp C_VOL_DN  &kp C_VOL_UP  &kp C_BRI_DEC  &kp C_BRI_UP  &trans
-&trans  &trans  &trans  &trans  &trans  &trans    &kp C_PREV  &kp C_PP      &kp C_NEXT    &trans         &trans        &trans
+&trans      &trans        &trans        &trans        &trans        &trans          &trans      &trans        &trans        &trans         &trans        &trans
+&trans      &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4    &kp C_MUTE  &kp C_VOL_DN  &kp C_VOL_UP  &kp C_BRI_DEC  &kp C_BRI_UP  &trans
+&bt BT_CLR  &trans        &trans        &trans        &trans        &trans          &kp C_PREV  &kp C_PP      &kp C_NEXT    &trans         &trans        &trans
                         &trans  &trans  &trans    &trans      &trans        &trans
             >;
         };
